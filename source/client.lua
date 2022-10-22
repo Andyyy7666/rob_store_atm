@@ -19,7 +19,7 @@ function getPtfx(ptfx)
     UseParticleFxAssetNextCall(ptfx)
 end
 
-RegisterNetEvent("ND_ATMRobbery:ReportRobbery", function(coords, street)
+RegisterNetEvent("ND_ATMRobbery:ReportRobbery", function(coords)
     local street = GetStreetNameAtCoord(coords.x, coords.y, coords.z)
     street = GetStreetNameFromHashKey(street)
     
