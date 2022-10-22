@@ -4,6 +4,21 @@ function addMoney(source, amount)
     NDCore.Functions.AddMoney(amount, source, "cash")
 end
 
+function notifyCops(coords)
+    local players = NDCore.Functions.GetPlayers()
+    local departments = {
+        ["SAHP"] = true,
+        ["LSPD"] = true,
+        ["BCSO"] = true
+    }
+
+    for player, playerData in pairs(players) do
+        if departments[playerData.job] then
+            TriggerClientEvent("ND_ATMRobbery:ReportRobbery", player, coords)
+        end
+    end
+end
+
 
 
 
@@ -25,6 +40,22 @@ function addMoney(source, amount)
     NDCore.Functions.AddMoney(amount, source, "cash")
 end
 
+function notifyCops(coords)
+    if not street then return end
+    local players = NDCore.Functions.GetPlayers()
+    local departments = {
+        ["SAHP"] = true,
+        ["LSPD"] = true,
+        ["BCSO"] = true
+    }
+
+    for player, playerData in pairs(players) do
+        if departments[playerData.job] then
+            TriggerClientEvent("ND_ATMRobbery:ReportRobbery", player, coords)
+        end
+    end
+end
+
 
 -------------------------------------------------------------------------------
 --                           ESX FRAMEWORK                                   --
@@ -37,14 +68,38 @@ function addMoney(source, amount)
     xPlayer.addMoney(amount)
 end
 
+function notifyCops(coords)
+    local xPlayers = ESX.GetPlayers()
+    for i=1, #xPlayers, 1 do
+        local xPlayer = ESX.GetPlayerFromId(xPlayers[i])
+        local job = xPlayer.getJob()
+        if job == "police" then
+            TriggerClientEvent("ND_ATMRobbery:ReportRobbery", xPlayers[i], coords)
+        end
+    end
+end
+
 
 -------------------------------------------------------------------------------
 --                           QB FRAMEWORK                                    --
 -------------------------------------------------------------------------------
 QBCore = exports["qb-core"]:GetCoreObject()
-local Player = QBCore.Functions.GetPlayer(source)
-if Player then
-    Player.Functions.AddMoney("cash", amount, "ATM Robbery")
+
+function addMoney(source, amount)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if Player then
+        Player.Functions.AddMoney("cash", amount, "ATM Robbery")
+    end
 end
+
+function notifyCops(coords)
+    local players = QBCore.Functions.GetQBPlayers()
+    for _, v in pairs(players) do
+        if v and v.PlayerData.job.name == "police" and v.PlayerData.job.onduty then
+            TriggerClientEvent("ND_ATMRobbery:ReportRobbery", v.PlayerData.source, coords)
+        end
+    end
+end
+
 
 ]]
