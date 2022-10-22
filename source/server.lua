@@ -27,8 +27,9 @@ RegisterNetEvent("ND_ATMRobbery:rob", function(netid)
     local ped = GetPlayerPed(src)
     if not ped or not coords then return end
 
+    notifyCops(coords)
+
     -- reward money every 1.5 seconds for 15 seconds if they're near the atm.
-    local player = NDCore.Functions.GetPlayer(src)
     for i=1, 10 do
         local pedCoords = GetEntityCoords(GetPlayerPed(src))
         if #(pedCoords - coords) < 3.5 then
