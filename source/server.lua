@@ -1,5 +1,3 @@
-NDCore = exports["ND_Core"]:GetCoreObject()
-
 local dollarBills = {
     5,
     10,
