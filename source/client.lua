@@ -19,6 +19,29 @@ function getPtfx(ptfx)
     UseParticleFxAssetNextCall(ptfx)
 end
 
+RegisterNetEvent("ND_ATMRobbery:ReportRobbery", function(coords, street)
+    local street = GetStreetNameAtCoord(coords.x, coords.y, coords.z)
+    street = GetStreetNameFromHashKey(street)
+    
+    local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
+    SetBlipSprite(blip, 161)
+    SetBlipColour(blip, 1)
+    SetBlipScale(blip, 1.0)
+    SetBlipAsShortRange(blip, true)
+    
+    BeginTextCommandSetBlipName("STRING")
+    AddTextComponentString("ATM Alarm: " .. street)
+    EndTextCommandSetBlipName(blip)
+
+    TriggerEvent("chat:addMessage", {
+        color = {255, 0, 0},
+        args = {"ATM Alarm", "ongoing robbery, damaged atm."}
+    })
+
+    Wait(30000)
+    RemoveBlip(blip)
+end)
+
 RegisterNetEvent("ND_ATMRobbery:money", function(atm)
     if not DoesEntityExist(atm) then return end
 
