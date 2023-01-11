@@ -9,7 +9,7 @@ game "gta5"
 lua54 "yes"
 
 server_scripts {
-    "config_server.lua",
+    "source/framework.lua",
     "source/server.lua"
 }
 client_script "source/client.lua"
