@@ -8,27 +8,23 @@ local dollarBills = {
 
 RegisterNetEvent("ND_ATMRobbery:rob", function(netid)
     local src = source
-
     -- check if the atm exists.
     local count = 0
     local atm = NetworkGetEntityFromNetworkId(netid)
-    while not atm do
+    while not atm and count < 100 do
         Wait(10)
         atm = NetworkGetEntityFromNetworkId(netid)
         count = count + 1
-        if count == 100 then return end
     end
     if not atm or not DoesEntityExist(atm) then return end
-
     -- get the atm coords and the players ped.
     local coords = GetEntityCoords(atm)
     local ped = GetPlayerPed(src)
     if not ped or not coords then return end
 
     notifyCops(coords)
-
     -- reward money every 1.5 seconds for 15 seconds if they're near the atm.
-    for i=1, 10 do
+    for i = 1, 10 do
         local pedCoords = GetEntityCoords(GetPlayerPed(src))
         if #(pedCoords - coords) < 3.5 then
             local amount = dollarBills[math.random(1, #dollarBills)]
