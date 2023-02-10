@@ -20,15 +20,12 @@ function getPtfx(ptfx)
 end
 
 RegisterNetEvent("ND_ATMRobbery:ReportRobbery", function(coords)
-    local street = GetStreetNameAtCoord(coords.x, coords.y, coords.z)
-    street = GetStreetNameFromHashKey(street)
-    
+    local street = GetStreetNameFromHashKey(GetStreetNameAtCoord(coords.x, coords.y, coords.z))
     local blip = AddBlipForCoord(coords.x, coords.y, coords.z)
     SetBlipSprite(blip, 161)
     SetBlipColour(blip, 1)
     SetBlipScale(blip, 1.0)
     SetBlipAsShortRange(blip, true)
-    
     BeginTextCommandSetBlipName("STRING")
     AddTextComponentString("ATM Alarm: " .. street)
     EndTextCommandSetBlipName(blip)
@@ -41,6 +38,7 @@ RegisterNetEvent("ND_ATMRobbery:ReportRobbery", function(coords)
     Wait(30000)
     RemoveBlip(blip)
 end)
+
 
 RegisterNetEvent("ND_ATMRobbery:money", function(atm)
     if not DoesEntityExist(atm) then return end
@@ -73,16 +71,11 @@ CreateThread(function()
         local ped = PlayerPedId()
         local pedCoords = GetEntityCoords(ped)
         local atm = GetClosestObjectOfType(pedCoords.x, pedCoords.y, pedCoords.z, 15.0, `prop_atm_01`, false, false, false)
-        if atm then
-            local atmHealth = GetEntityHealth(atm)
-            if atmHealth == 0 then
-                NetworkRegisterEntityAsNetworked(atm)
-                local broken = GetBrokenATM(atm)
-                if not broken then
-                    SetBrokenATM(atm, true)
-                    TriggerEvent("ND_ATMRobbery:money", atm)
-                end
-            end
+        if atm and GetEntityHealth(atm) == 0 and not GetBrokenATM(atm) then
+            NetworkRegisterEntityAsNetworked(atm)
+            SetBrokenATM(atm, true)
+            TriggerEvent("ND_ATMRobbery:money", atm)
         end
     end
 end)
+
